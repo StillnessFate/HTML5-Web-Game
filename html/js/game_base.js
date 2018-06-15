@@ -538,9 +538,14 @@ function ObjectManager(gameObject) {
     var objectList = [];
     var addObjectList = [];
     var removeObjectList = [];
+    var depthLayers = [];
 
     this.getObjectList = function () {
         return objectList;
+    };
+
+    this.getDepthLayers = function () {
+        return depthLayers;
     };
 
     this.getRoom = function () {
@@ -556,6 +561,7 @@ function ObjectManager(gameObject) {
             return false;
 
         objectList.push(object);
+        this.insertObjectToDepthLayers(object);
         return true;
     };
 
@@ -574,6 +580,7 @@ function ObjectManager(gameObject) {
         var removeIdx = objectList.indexOf(object);
         if (removeIdx != -1) {
             objectList.splice(removeIdx, 1);
+            this.removeObjectFromDepthLayers(object)
             //object.destructor();
         }
         else
@@ -594,9 +601,48 @@ function ObjectManager(gameObject) {
         return true;
     };
 
-    this.refreshDepth = function () {
-        objectList.sort(function (a, b) { return a.depth - b.depth; });
+    this.insertObjectToDepthLayers = function (object) {
+        var start = 0;
+        var end = depthLayers.length - 1;
+        var mid;
+
+        while (start <= end) {
+            mid = (start + end) / 2 | 0;
+            if (depthLayers[mid].depth > object.depth) {
+                end = mid - 1;
+                continue;
+            }
+            start = mid + 1;
+            if (depthLayers[mid].depth == object.depth) {
+                var depthLayer = depthLayers[mid];
+                depthLayer.objectList.push(object);
+                object.depthLayer = depthLayer
+                return;
+            }
+        }
+
+        var depthLayer = {
+            depth: object.depth,
+            objectList: [object]
+        };
+        object.depthLayer = depthLayer;
+        depthLayers.splice(start, 0, depthLayer);
     };
+
+    this.removeObjectFromDepthLayers = function (object) {
+        var depthLayer = object.depthLayer
+        var removeIdx = depthLayer.objectList.indexOf(object);
+        depthLayer.objectList.splice(removeIdx, 1);
+
+        if (depthLayer.objectList.length == 0) {
+            removeIdx = depthLayers.indexOf(depthLayer);
+            depthLayers.splice(removeIdx, 1);
+        }
+    }
+
+    // this.refreshDepth = function () {
+    //     objectList.sort(function (a, b) { return a.depth - b.depth; });
+    // };
 
     this.performAddObjects = function () {
         var len = addObjectList.length;
@@ -607,7 +653,7 @@ function ObjectManager(gameObject) {
                 i += 1;
             }
             addObjectList.splice(0, len);
-            this.refreshDepth();
+            // this.refreshDepth();
         }
     };
 
@@ -1240,73 +1286,69 @@ function Game(canvas, targetFPS, runGame) {
         }
     }
 
-    this.objectListUpdate = function (objectList, pre, main, post) {
+    this.objectUpdateAll = function (object_m, pre, main, post) {
         pre = typeof pre !== 'undefined' ? pre : false;
         main = typeof main !== 'undefined' ? main : true;
         post = typeof post !== 'undefined' ? post : false;
-        var i, len = objectList.length;
+        var depthLayers = object_m.getDepthLayers();
+        var loopSet = [[pre, -1], [main, 0], [post, 1]]
+        var i, layersI, loopSetI
+        var layersLen = depthLayers.length, loopSetLen = loopSet.length;
+        var depthLayer;
 
-        if (pre) {
-            i = 0;
-            while (i < len) {
-                if (objectList[i].parent == null)
-                    this.objectUpdate(objectList[i], -1)
-                i += 1;
+        loopSetI = 0;
+        while (loopSetI < loopSetLen) {
+            var set = loopSet[loopSetI]
+            if (set[0]) {
+                layersI = 0;
+                while (layersI < layersLen) {
+                    depthLayer = depthLayers[layersI];
+                    objectList = depthLayer.objectList;
+                    len = objectList.length;
+                    i = 0;
+                    while (i < len) {
+                        if (objectList[i].parent == null)
+                            this.objectUpdate(objectList[i], set[1])
+                        i += 1;
+                    }
+                    layersI += 1;
+                }
             }
-        }
-        if (main) {
-            i = 0;
-            while (i < len) {
-                if (objectList[i].parent == null)
-                    this.objectUpdate(objectList[i], 0)
-                i += 1;
-            }
-        }
-        if (post) {
-            i = 0;
-            while (i < len) {
-                if (objectList[i].parent == null)
-                    this.objectUpdate(objectList[i], 1)
-                i += 1;
-            }
+            loopSetI += 1;
         }
     }
 
-    this.objectListDraw = function (objectList, context, pre, main, post) {
+    this.objectDrawAll = function (object_m, context, pre, main, post) {
         pre = typeof pre !== 'undefined' ? pre : false;
         main = typeof main !== 'undefined' ? main : true;
         post = typeof post !== 'undefined' ? post : false;
-        var i, len = objectList.length;
+        var depthLayers = object_m.getDepthLayers();
+        var loopSet = [[pre, -1], [main, 0], [post, 1]]
+        var i, layersI, loopSetI
+        var layersLen = depthLayers.length, loopSetLen = loopSet.length;
+        var depthLayer;
 
-        if (pre) {
-            i = 0;
-            while (i < len) {
-                if (objectList[i].visible) {
-                    if (objectList[i].parent == null)
-                        this.objectDraw(objectList[i], context, -1)
+        loopSetI = 0;
+        while (loopSetI < loopSetLen) {
+            var set = loopSet[loopSetI]
+            if (set[0]) {
+                layersI = 0;
+                while (layersI < layersLen) {
+                    depthLayer = depthLayers[layersI];
+                    objectList = depthLayer.objectList;
+                    len = objectList.length;
+                    i = 0;
+                    while (i < len) {
+                        if (objectList[i].visible) {
+                            if (objectList[i].parent == null)
+                                this.objectDraw(objectList[i], context, set[1])
+                        }
+                        i += 1;
+                    }
+                    layersI += 1;
                 }
-                i += 1;
             }
-        }
-        if (main) {
-            i = 0;
-            while (i < len) {
-                if (objectList[i].visible) {
-                    if (objectList[i].parent == null)
-                        this.objectDraw(objectList[i], context, 0)
-                }
-                i += 1;
-            }
-        }
-        if (post) {
-            i = 0;
-            while (i < len) {
-                if (objectList[i].visible) {
-                    if (objectList[i].parent == null)
-                        this.objectDraw(objectList[i], context, 1)
-                }
-                i += 1;
-            }
+            loopSetI += 1;
         }
     }
 
@@ -1333,13 +1375,11 @@ function Game(canvas, targetFPS, runGame) {
         this.input_m.update();
 
         // Global objects update
-        var objectList = this.object_m.getObjectList();
-        this.objectListUpdate(objectList)
+        this.objectUpdateAll(this.object_m)
 
         // Room objects and view update
         if (this.room != null) {
-            objectList = this.room.getObjectManager().getObjectList();
-            this.objectListUpdate(objectList)
+            this.objectUpdateAll(this.room.getObjectManager())
 
             this.room.getView().update();
         }
@@ -1348,7 +1388,7 @@ function Game(canvas, targetFPS, runGame) {
 
         // Room objects collision check
         if (this.room != null) {
-            objectList = this.room.getObjectManager().getObjectList();
+            var objectList = this.room.getObjectManager().getObjectList();
             this.objectListCollisionCheck(objectList);
         }
     };
@@ -1359,8 +1399,7 @@ function Game(canvas, targetFPS, runGame) {
 
         // Room objects draw
         if (this.room != null) {
-            var objectList = this.room.getObjectManager().getObjectList();
-            this.objectListDraw(objectList, this.context);
+            this.objectDrawAll(this.room.getObjectManager(), this.context);
         }
         
         this.fpsCounter.draw(this.context);
