@@ -12,9 +12,8 @@ var game_rooms = [
 //    default: false
 //};
 
-
 function TestRoom() {
-    this.init = function () {
+    this.init = function() {
         var v;
         var o;
 
@@ -47,5 +46,5 @@ function TestRoom() {
         //    this.object_m.addObject(o);
         //    o.setSpriteCenter(i, i);
         // }
-    }
+    };
 }

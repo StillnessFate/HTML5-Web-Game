@@ -1,4 +1,5 @@
 <html>
+
 <body>
     <button onclick="test1()">1</button>
     <button onclick="test2()">2</button>
@@ -58,7 +59,7 @@
             //var temp2 = 1;
             var ttt1 = Date.now();
             while (i < len) {
-				temp1 += f1(0, 0, 30, 40, 0, 10);
+                temp1 += f1(0, 0, 30, 40, 0, 10);
                 i += 1;
             }
             var ttt2 = Date.now();
@@ -95,7 +96,7 @@
                 // temp1 += this.temp2;
                 // temp1 += this.temp2;
 
-				temp1 += temp3;
+                temp1 += temp3;
                 temp1 += temp3;
                 temp1 += temp3;
                 temp1 += temp3;
@@ -124,14 +125,14 @@
             var ttt2 = Date.now();
             console.log("LOG: " + (ttt2 - ttt1));
         }
-		
-		function test0_3() {
+
+        function test0_3() {
             var i = 0;
             var len = 100000000;
             var temp1 = 0;
             this.temp2 = 1;
             var temp3 = 1;
-			var temp_obj = {x:0,y:0}
+            var temp_obj = { x: 0, y: 0 }
             var ttt1 = Date.now();
             while (i < len) {
                 // temp1 += this.temp2;
@@ -139,8 +140,8 @@
                 // temp1 += this.temp2;
                 // temp1 += this.temp2;
                 // temp1 += this.temp2;
-				
-				temp_obj['x'] += temp3;
+
+                temp_obj['x'] += temp3;
                 temp_obj['x'] += temp3;
                 temp_obj['x'] += temp3;
                 temp_obj['x'] += temp3;
@@ -150,14 +151,14 @@
             var ttt2 = Date.now();
             console.log("LOG: " + (ttt2 - ttt1));
         }
-		
-		function test0_4() {
+
+        function test0_4() {
             var i = 0;
             var len = 100000000;
             var temp1 = 0;
             this.temp2 = 1;
             var temp3 = 1;
-			var temp_obj = {x:1,y:0}
+            var temp_obj = { x: 1, y: 0 }
             var ttt1 = Date.now();
             while (i < len) {
                 // temp1 += this.temp2;
@@ -165,8 +166,8 @@
                 // temp1 += this.temp2;
                 // temp1 += this.temp2;
                 // temp1 += this.temp2;
-				
-				temp1 += temp_obj['x'];
+
+                temp1 += temp_obj['x'];
                 temp1 += temp_obj['x'];
                 temp1 += temp_obj['x'];
                 temp1 += temp_obj['x'];
@@ -250,4 +251,5 @@
     </script>
 
 </body>
-</html> 
+
+</html>

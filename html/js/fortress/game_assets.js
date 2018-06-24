@@ -1,4 +1,4 @@
-var game_assets = []
+var game_assets = [];
 
 //{
 //    type: "",

@@ -1,9 +1,9 @@
 function degToRad(degrees) {
-    return degrees * Math.PI / 180;
+    return (degrees * Math.PI) / 180;
 }
 
 function radToDeg(radians) {
-    return radians * 180 / Math.PI;
+    return (radians * 180) / Math.PI;
 }
 
 function angleDistanceToPos(degrees, distance) {
@@ -34,14 +34,18 @@ function getAngle(x1, y1, x2, y2) {
 function rotationPos(x1, y1, x2, y2, degrees) {
     var radAngle = degToRad(degrees);
 
-    var rx = ((x2 - x1) * Math.cos(radAngle) - (y2 - y1) * Math.sin(radAngle)) + x1;
-    var ry = ((x2 - x1) * Math.sin(radAngle) + (y2 - y1) * Math.cos(radAngle)) + y1;
-    return { x: rx, y: ry }
+    var rx =
+        (x2 - x1) * Math.cos(radAngle) - (y2 - y1) * Math.sin(radAngle) + x1;
+    var ry =
+        (x2 - x1) * Math.sin(radAngle) + (y2 - y1) * Math.cos(radAngle) + y1;
+    return { x: rx, y: ry };
 }
 
 function getIntersectionPos(a1, a2, b1, b2) {
-    var area_abc = (a1.x - b1.x) * (a2.y - b1.y) - (a1.y - b1.y) * (a2.x - b1.x);
-    var area_abd = (a1.x - b2.x) * (a2.y - b2.y) - (a1.y - b2.y) * (a2.x - b2.x);
+    var area_abc =
+        (a1.x - b1.x) * (a2.y - b1.y) - (a1.y - b1.y) * (a2.x - b1.x);
+    var area_abd =
+        (a1.x - b2.x) * (a2.y - b2.y) - (a1.y - b2.y) * (a2.x - b2.x);
 
     //겹쳐짐
     if ((a1.x == b1.x && a1.y == b1.y) || (a1.x == b2.x && a1.y == b2.y))
@@ -53,7 +57,8 @@ function getIntersectionPos(a1, a2, b1, b2) {
         return false;
     }
 
-    var area_cda = (b1.x - a1.x) * (b2.y - a1.y) - (b1.y - a1.y) * (b2.x - a1.x);
+    var area_cda =
+        (b1.x - a1.x) * (b2.y - a1.y) - (b1.y - a1.y) * (b2.x - a1.x);
     var area_cdb = area_cda + area_abc - area_abd;
     if (area_cda * area_cdb >= 0) {
         return false;
@@ -66,9 +71,11 @@ function getIntersectionPos(a1, a2, b1, b2) {
 }
 
 function getIntersectionPos2(a, b, c, d) {
-    var nx1 = (b.y - a.y), ny1 = (a.x - b.x);
+    var nx1 = b.y - a.y,
+        ny1 = a.x - b.x;
 
-    var nx2 = (d.y - c.y), ny2 = (c.x - d.x);
+    var nx2 = d.y - c.y,
+        ny2 = c.x - d.x;
 
     var denominator = nx1 * ny2 - ny1 * nx2;
     if (denominator == 0) {
@@ -96,26 +103,51 @@ function getIntersectionPos2(a, b, c, d) {
     return { x: a.x + dx, y: a.y + dy };
 }
 
-function drawImageEx(context, image, x, y, split_x, split_y, split_width, split_height, width, height, centerX, centerY, degrees, alpha) {
-    split_x = typeof split_x !== 'undefined' ? split_x : 0;
-    split_y = typeof split_y !== 'undefined' ? split_y : 0;
-    split_width = typeof split_width !== 'undefined' ? split_width : image.width;
-    split_height = typeof split_height !== 'undefined' ? split_height : image.height;
-    width = typeof width !== 'undefined' ? width : image.width;
-    height = typeof height !== 'undefined' ? height : image.height;
-    centerX = typeof centerX !== 'undefined' ? centerX : 0;
-    centerY = typeof centerY !== 'undefined' ? centerY : 0;
-    degrees = typeof degrees !== 'undefined' ? degrees : 0;
-    alpha = typeof alpha !== 'undefined' ? alpha : 1;
-    if (alpha == 0)
-        return
+function drawImageEx(
+    context,
+    image,
+    x,
+    y,
+    split_x,
+    split_y,
+    split_width,
+    split_height,
+    width,
+    height,
+    centerX,
+    centerY,
+    degrees,
+    alpha
+) {
+    split_x = typeof split_x !== "undefined" ? split_x : 0;
+    split_y = typeof split_y !== "undefined" ? split_y : 0;
+    split_width =
+        typeof split_width !== "undefined" ? split_width : image.width;
+    split_height =
+        typeof split_height !== "undefined" ? split_height : image.height;
+    width = typeof width !== "undefined" ? width : image.width;
+    height = typeof height !== "undefined" ? height : image.height;
+    centerX = typeof centerX !== "undefined" ? centerX : 0;
+    centerY = typeof centerY !== "undefined" ? centerY : 0;
+    degrees = typeof degrees !== "undefined" ? degrees : 0;
+    alpha = typeof alpha !== "undefined" ? alpha : 1;
+    if (alpha == 0) return;
 
     context.save();
     context.translate(x, y);
-    if (degrees != 0)
-        context.rotate(degToRad(degrees));
+    if (degrees != 0) context.rotate(degToRad(degrees));
     context.globalAlpha = alpha;
-    context.drawImage(image, split_x, split_y, split_width, split_height, -centerX, -centerY, width, height);
+    context.drawImage(
+        image,
+        split_x,
+        split_y,
+        split_width,
+        split_height,
+        -centerX,
+        -centerY,
+        width,
+        height
+    );
     context.restore();
 }
 
@@ -131,39 +163,39 @@ function newRoom(room) {
     return new room();
 }
 
-var cloneObject = typeof Object.assign !== 'undefined' ?
-    function (obj) {
-        return Object.assign({}, obj)
-    } :
-    function (obj) {
-        var clone = {};
-        for (var key in obj) {
-            clone[key] = obj[key];
+var cloneObject =
+    typeof Object.assign !== "undefined"
+        ? function(obj) {
+            return Object.assign({}, obj);
         }
-        return clone;
-    };
+        : function(obj) {
+            var clone = {};
+            for (var key in obj) {
+                clone[key] = obj[key];
+            }
+            return clone;
+        };
 
 function collisionCheckBox(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2) {
-    return ax1 <= bx2 &&
-        ax2 >= bx1 &&
-        ay1 <= by2 &&
-        ay2 >= by1;
+    return ax1 <= bx2 && ax2 >= bx1 && ay1 <= by2 && ay2 >= by1;
 }
 
 function collisionCheck(collisionMesh1, collisionMesh2) {
     var type1 = collisionMesh1.type;
     var type2 = collisionMesh2.type;
 
-    var BoxAndBox = function (collisionMesh1, collisionMesh2) {
-        return collisionMesh1.x1 <= collisionMesh2.x2 &&
+    var BoxAndBox = function(collisionMesh1, collisionMesh2) {
+        return (
+            collisionMesh1.x1 <= collisionMesh2.x2 &&
             collisionMesh1.x2 >= collisionMesh2.x1 &&
             collisionMesh1.y1 <= collisionMesh2.y2 &&
-            collisionMesh1.y2 >= collisionMesh2.y1;
+            collisionMesh1.y2 >= collisionMesh2.y1
+        );
     };
 
     if (type1 == "Box") {
         if (type2 == "Box") {
-            return BoxAndBox(collisionMesh1, collisionMesh2)
+            return BoxAndBox(collisionMesh1, collisionMesh2);
         }
     }
 }
@@ -178,21 +210,33 @@ function collisionCheckObjects(obj1, obj2) {
     while (i < len1) {
         var ii = 0;
         while (ii < len2) {
-            var a1 = obj1.getOffsetSpritePos(collisionSet1[i][0].x, collisionSet1[i][0].y);
+            var a1 = obj1.getOffsetSpritePos(
+                collisionSet1[i][0].x,
+                collisionSet1[i][0].y
+            );
             a1.x += obj1.x;
             a1.y += obj1.y;
-            var a2 = obj1.getOffsetSpritePos(collisionSet1[i][1].x, collisionSet1[i][1].y);
+            var a2 = obj1.getOffsetSpritePos(
+                collisionSet1[i][1].x,
+                collisionSet1[i][1].y
+            );
             a2.x += obj1.x;
             a2.y += obj1.y;
-            var b1 = obj2.getOffsetSpritePos(collisionSet2[ii][0].x, collisionSet2[ii][0].y);
+            var b1 = obj2.getOffsetSpritePos(
+                collisionSet2[ii][0].x,
+                collisionSet2[ii][0].y
+            );
             b1.x += obj2.x;
             b1.y += obj2.y;
-            var b2 = obj2.getOffsetSpritePos(collisionSet2[ii][1].x, collisionSet2[ii][1].y);
+            var b2 = obj2.getOffsetSpritePos(
+                collisionSet2[ii][1].x,
+                collisionSet2[ii][1].y
+            );
             b2.x += obj2.x;
             b2.y += obj2.y;
-            iPoint = getIntersectionPos2(a1, a2, b1, b2);
+            var iPoint = getIntersectionPos2(a1, a2, b1, b2);
             if (iPoint != false) {
-                obj1.collidedObjects.push({ iPoint: iPoint, obj: obj2 });//Room 좌표
+                obj1.collidedObjects.push({ iPoint: iPoint, obj: obj2 }); //Room 좌표
                 obj2.collidedObjects.push({ iPoint: iPoint, obj: obj1 });
                 return true;
             }
@@ -204,11 +248,11 @@ function collisionCheckObjects(obj1, obj2) {
 }
 
 function requestFullScreen(element) {
-    if(element.requestFullScreen) {
+    if (element.requestFullScreen) {
         element.requestFullScreen();
-    } else if(element.webkitRequestFullScreen ) {
+    } else if (element.webkitRequestFullScreen) {
         element.webkitRequestFullScreen();
-    } else if(element.mozRequestFullScreen) {
+    } else if (element.mozRequestFullScreen) {
         element.mozRequestFullScreen();
     } else if (element.msRequestFullscreen) {
         element.msRequestFullscreen();
@@ -216,11 +260,11 @@ function requestFullScreen(element) {
 }
 
 function exitFullscreen(element) {
-    if(element.exitFullscreen) {
+    if (element.exitFullscreen) {
         element.exitFullscreen();
-    } else if(element.webkitExitFullscreen ) {
+    } else if (element.webkitExitFullscreen) {
         element.webkitExitFullscreen();
-    } else if(element.mozCancelFullScreen) {
+    } else if (element.mozCancelFullScreen) {
         element.mozCancelFullScreen();
     } else if (element.msExitFullscreen) {
         element.msExitFullscreen();
@@ -228,9 +272,8 @@ function exitFullscreen(element) {
 }
 
 function lerp(start, end, amt, limit) {
-    limit = typeof limit !== 'undefined' ? limit : false;
-    if (limit && (1 < amt))
-        amt = 1;
+    limit = typeof limit !== "undefined" ? limit : false;
+    if (limit && 1 < amt) amt = 1;
     return (1 - amt) * start + amt * end;
 }
 
@@ -238,13 +281,25 @@ function diff(a, b) {
     return Math.abs(a - b);
 }
 
-function drawCircle(context, x, y, radius, color, fillColor, lineDash, startAngle, endAngle, counterclockwise) {
-    color = typeof color !== 'undefined' ? color : "#555555";
-    fillColor = typeof fillColor !== 'undefined' ? fillColor : null;
-    lineDash = typeof lineDash !== 'undefined' ? lineDash : [];
-    startAngle = typeof startAngle !== 'undefined' ? startAngle : 0;
-    endAngle = typeof endAngle !== 'undefined' ? endAngle : 2 * Math.PI;
-    counterclockwise = typeof counterclockwise !== 'undefined' ? counterclockwise : false;
+function drawCircle(
+    context,
+    x,
+    y,
+    radius,
+    color,
+    fillColor,
+    lineDash,
+    startAngle,
+    endAngle,
+    counterclockwise
+) {
+    color = typeof color !== "undefined" ? color : "#555555";
+    fillColor = typeof fillColor !== "undefined" ? fillColor : null;
+    lineDash = typeof lineDash !== "undefined" ? lineDash : [];
+    startAngle = typeof startAngle !== "undefined" ? startAngle : 0;
+    endAngle = typeof endAngle !== "undefined" ? endAngle : 2 * Math.PI;
+    counterclockwise =
+        typeof counterclockwise !== "undefined" ? counterclockwise : false;
 
     context.strokeStyle = color;
 
@@ -259,8 +314,8 @@ function drawCircle(context, x, y, radius, color, fillColor, lineDash, startAngl
 }
 
 function drawLine(context, x1, y1, x2, y2, color, lineDash) {
-    color = typeof color !== 'undefined' ? color : "#555555";
-    lineDash = typeof lineDash !== 'undefined' ? lineDash : [];
+    color = typeof color !== "undefined" ? color : "#555555";
+    lineDash = typeof lineDash !== "undefined" ? lineDash : [];
 
     context.strokeStyle = color;
 
@@ -271,17 +326,26 @@ function drawLine(context, x1, y1, x2, y2, color, lineDash) {
     context.stroke();
 }
 
-function drawRect(context, x, y, width, height, color, fillColor, fillOnly, lineDash) {
-    color = typeof color !== 'undefined' ? color : "#555555";
-    fillColor = typeof fillColor !== 'undefined' ? fillColor : null;
-    fillOnly = typeof fillOnly !== 'undefined' ? fillOnly : false;
-    lineDash = typeof lineDash !== 'undefined' ? lineDash : [];
+function drawRect(
+    context,
+    x,
+    y,
+    width,
+    height,
+    color,
+    fillColor,
+    fillOnly,
+    lineDash
+) {
+    color = typeof color !== "undefined" ? color : "#555555";
+    fillColor = typeof fillColor !== "undefined" ? fillColor : null;
+    fillOnly = typeof fillOnly !== "undefined" ? fillOnly : false;
+    lineDash = typeof lineDash !== "undefined" ? lineDash : [];
 
     if (fillOnly) {
         context.fillStyle = fillColor;
         context.fillRect(x, y, width, height);
-    }
-    else {
+    } else {
         context.beginPath();
         context.strokeStyle = color;
         context.setLineDash(lineDash);

@@ -12,13 +12,12 @@ var game_rooms = [
 //    default: false
 //};
 
-
 function TestRoom() {
     this.width = 1000;
     this.height = 1000;
     this.gravity = 2000;
 
-    this.init = function () {
+    this.init = function() {
         var v;
         var o;
 
@@ -38,14 +37,14 @@ function TestRoom() {
 
         o = newObject(Tank);
         this.object_m.addObject(o);
-        o.setPos(100,100);
+        o.setPos(100, 100);
         o.playerControl = true;
-        v.setTarget(o)
-        
+        v.setTarget(o);
+
         // for (var i = 0; i < 1000; i += 1) {
         //    var o = newObject(Dummy);
         //    this.object_m.addObject(o);
         //    o.setSpriteCenter(i, i);
         // }
-    }
+    };
 }

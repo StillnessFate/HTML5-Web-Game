@@ -6,23 +6,23 @@ function game_main() {
 
     mainGame = new Game(canvas, targetFPS);
 
-    canvas.addEventListener('contextmenu', function (e) {
+    canvas.addEventListener("contextmenu", function(e) {
         e.preventDefault();
     });
-    canvas.addEventListener('dragstart', function (e) {
+    canvas.addEventListener("dragstart", function(e) {
         e.preventDefault();
     });
-    canvas.addEventListener('selectstart', function (e) {
+    canvas.addEventListener("selectstart", function(e) {
         e.preventDefault();
     });
-    canvas.addEventListener('wheel', function (e) {
+    canvas.addEventListener("wheel", function(e) {
         e.preventDefault();
     });
     // canvas.addEventListener('touchmove', function (e) {
     //     e.preventDefault();
     // });
-    window.addEventListener('resize', resizeCanvas);
-    
+    window.addEventListener("resize", resizeCanvas);
+
     resizeCanvas();
     window.scrollTo(0, 1);
 }
@@ -37,10 +37,10 @@ function resizeCanvas() {
 
     if (gameHeight / gameWidth > viewportHeigth / viewportWidth) {
         newGameHeight = viewportHeigth;
-        newGameWidth = newGameHeight * gameWidth / gameHeight;  
+        newGameWidth = (newGameHeight * gameWidth) / gameHeight;
     } else {
         newGameWidth = viewportWidth;
-        newGameHeight = newGameWidth * gameHeight / gameWidth;		 
+        newGameHeight = (newGameWidth * gameHeight) / gameWidth;
     }
 
     canvas.style.width = newGameWidth.toFixed() + "px";
@@ -49,17 +49,16 @@ function resizeCanvas() {
     newGameX = (viewportWidth - newGameWidth) / 2;
     newGameY = (viewportHeigth - newGameHeight) / 2;
 
-    canvas.style.margin = newGameY.toFixed() + "px " + newGameX.toFixed() + "px";
-};
+    canvas.style.margin =
+        newGameY.toFixed() + "px " + newGameX.toFixed() + "px";
+}
 
 function start() {
-    if (mainGame != null)
-        mainGame.run();
+    if (mainGame != null) mainGame.run();
 }
 
 function stop() {
-    if (mainGame != null)
-        mainGame.stop();
+    if (mainGame != null) mainGame.stop();
 }
 
-window.onload = game_main
+window.onload = game_main;

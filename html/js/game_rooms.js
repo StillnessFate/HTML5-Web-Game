@@ -1,4 +1,4 @@
-var game_rooms = []
+var game_rooms = [];
 
 //{
 //    name: "",
